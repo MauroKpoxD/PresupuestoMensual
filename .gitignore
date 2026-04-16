@@ -1,3 +1,5 @@
 .vscode
 base_de_datos.money
 *.exe
+.vs
+output

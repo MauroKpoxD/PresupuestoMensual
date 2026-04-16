@@ -1,7 +1,7 @@
 # Presupuesto Mensual
 
-Un programa en **C++** para llevar el control de tus ingresos y gastos directamente desde la consola.  
-*Ideal para aprender, para usar en casa o como base para algo más grande (¿una API REST?)*
+Un programa en C++ para llevar el control de tus ingresos y gastos directamente desde la consola.  
+Ideal para aprender, para usar en casa o como base para algo más grande (¿una API REST?).
 
 ---
 
@@ -9,23 +9,23 @@ Un programa en **C++** para llevar el control de tus ingresos y gastos directame
 
 - Ingresar dinero (registra la fecha y hora automáticamente).
 - Sacar dinero (gastos).
-- Ver el **balance actual** (ingresos - gastos).
-- Ver el **historial completo** de movimientos.
+- Ver el balance actual (ingresos - gastos).
+- Ver el historial completo de movimientos.
 - Datos guardados en un archivo (`base_de_datos.money`).
 
-> *Próximamente: mostrar datos en forma de matriz, IDs para cada movimiento, exportar a CSV...*
+> Próximamente: mostrar datos en forma de matriz, IDs para cada movimiento, exportar a CSV...
 
 ---
 
-## ¿Qué necesitas?
+## Que necesitas
 
-- Un compilador de C++ (recomendamos **g++**)
+- Un compilador de C++ (recomendamos g++)
 - Terminal / consola
 - Ganas de no perder la cuenta de la plata
 
 ---
 
-## Cómo compilar y ejecutar
+## Como compilar y ejecutar
 
 ### 1. Clonar o descargar el proyecto
 
@@ -40,7 +40,7 @@ cd PresupuestoMensual
 g++ -std=c++11 -o presupuesto main.cpp
 ```
 
-> Si querés guardar el ejecutable dentro de una carpeta `output`:
+> Si queres guardar el ejecutable dentro de una carpeta `output`:
 > ```bash
 > mkdir output
 > g++ -std=c++11 -o output/presupuesto main.cpp
@@ -48,11 +48,11 @@ g++ -std=c++11 -o presupuesto main.cpp
 
 ### 3. Ejecutar
 
-- En **Linux / Mac**:
+- En Linux / Mac:
   ```bash
   ./presupuesto
   ```
-- En **Windows** (con MinGW):
+- En Windows (con MinGW):
   ```bash
   presupuesto.exe
   ```
@@ -63,9 +63,43 @@ g++ -std=c++11 -o presupuesto main.cpp
 
 ---
 
-## 🎮 Cómo se usa
+## Firmar el ejecutable (opcional)
 
-Al ejecutar el programa vas a ver un menú como este:
+Para evitar que Windows bloquee el programa, podes firmarlo digitalmente con tu propio certificado.
+Esto pasa porque modificas archivos con un programa sin firmar y por nuevas restricciones de seguridad.
+Igualmente podes confiar que no es un virus porque tenes el codigo fuente en tus manos y la certeza
+de que no hay nada ofuscado o cosas raras.
+
+### Pasos rapidos
+
+1. **Crear un certificado autofirmado** (PowerShell como Administrador):
+   ```powershell
+   New-SelfSignedCertificate -Type CodeSigningCert -Subject "CN=TuNombre" -CertStoreLocation Cert:\CurrentUser\My\
+   ```
+
+2. **Obtener la huella digital** del certificado recien creado:
+   ```powershell
+   Get-ChildItem Cert:\CurrentUser\My\ | Where-Object { $_.Subject -like "*TuNombre*" }
+   ```
+   Copias el valor de `Thumbprint` (una cadena como `EB7874BA316F7562620C2610FE4F06F09B868C8D`).
+
+3. **Firmar el .exe** con `signtool` (reemplaza `[HUELLA]` por la huella que copiaste):
+   ```bash
+   signtool sign /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com /sha1 [HUELLA] main.exe
+   ```
+
+   Ejemplo real:
+   ```bash
+   signtool sign /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com /sha1 EB7874BA316F7562620C2610FE4F06F09B868C8D main.exe
+   ```
+
+> La herramienta `signtool` esta incluida en el Windows SDK o en Visual Studio. Si no la tenes, podes usar el "Developer PowerShell" que viene con Visual Studio.
+
+---
+
+## Como se usa
+
+Al ejecutar el programa vas a ver un menu como este:
 
 ```
 <------------------------------------------------->
@@ -78,7 +112,7 @@ Al ejecutar el programa vas a ver un menú como este:
 <------------------------------------------------->
 ```
 
-Solo tenés que escribir el número de la opción y seguir las instrucciones en pantalla.
+Solo tenes que escribir el numero de la opcion y seguir las instrucciones en pantalla.
 
 ### Ejemplo de historial guardado
 
@@ -90,13 +124,13 @@ Solo tenés que escribir el número de la opción y seguir las instrucciones en 
 
 ---
 
-## 📁 Estructura del proyecto
+## Estructura del proyecto
 
 ```
 PresupuestoMensual/
-├── output/                # Todos los .exe
-├── main.cpp               # Código fuente
-├── base_de_datos.money    # Se genera automáticamente (historial)
+├── output/                # Carpeta donde se guardan los ejecutables
+├── main.cpp               # Codigo fuente
+├── base_de_datos.money    # Se genera automaticamente (historial)
 └── README.md              # Este archivo
 ```
 
@@ -104,27 +138,26 @@ PresupuestoMensual/
 
 ## Estado del proyecto
 
-**Beta funcional** – las operaciones básicas andan bien.  
-Faltan algunas validaciones (por ejemplo, evitar números negativos, control de saldo insuficiente, etc.), pero es totalmente usable.
+Beta funcional – las operaciones basicas andan bien.  
+Faltan algunas validaciones (por ejemplo, evitar numeros negativos, control de saldo insuficiente, etc.), pero es totalmente usable.
 
-> *Esto probablemente termine con solo esta beta.*
+> Esto probablemente termine con solo esta beta.
 
 ---
 
-## ¿Querés colaborar?
+## Queres colaborar
 
-¡El proyecto es abierto! Podés:
+El proyecto es abierto. Podes:
 - Probar el programa y reportar errores.
-- Sugerir nuevas opciones (editar movimientos, gráficos en consola, etc.).
-- Pasar el código a algo más lindo (API REST, base de datos SQLite...).
+- Sugerir nuevas opciones (editar movimientos, graficos en consola, etc.).
+- Pasar el codigo a algo mas lindo (API REST, base de datos SQLite...).
 
 ---
 
-## 📄 Licencia
+## Licencia
 
-LICENCE.md
+Ver el archivo LICENCE.md
 
 ---
 
-*Si te sirvió, regalale una estrellita al repo.* ⭐
-```
+*Si te sirvio, regalale una estrellita al repo.*
