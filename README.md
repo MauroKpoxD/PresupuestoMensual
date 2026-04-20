@@ -8,24 +8,25 @@ Ideal para aprender, para usar en casa o como base para algo más grande (¿una 
 ## Características
 
 - Ingresar dinero (registra la fecha y hora automáticamente).
-- Sacar dinero (gastos).
+- Sacar dinero (gastos) con control de saldo suficiente.
 - Ver el balance actual (ingresos - gastos).
 - Ver el historial completo de movimientos.
+- Limpieza de pantalla automática y pausa tras cada acción.
 - Datos guardados en un archivo (`base_de_datos.money`).
 
 > Próximamente: mostrar datos en forma de matriz, IDs para cada movimiento, exportar a CSV...
 
 ---
 
-## Que necesitas
+## Qué necesitas
 
-- Un compilador de C++ (recomendamos g++)
-- Terminal / consola
-- Ganas de no perder la cuenta de la plata
+- Un compilador de C++ (recomendamos g++ con soporte C++11 o superior).
+- Terminal / consola.
+- Ganas de no perder la cuenta de la plata.
 
 ---
 
-## Como compilar y ejecutar
+## Cómo compilar y ejecutar
 
 ### 1. Clonar o descargar el proyecto
 
@@ -40,7 +41,7 @@ cd PresupuestoMensual
 g++ -std=c++11 -o presupuesto main.cpp
 ```
 
-> Si queres guardar el ejecutable dentro de una carpeta `output`:
+> Si quieres guardar el ejecutable dentro de una carpeta `output`:
 > ```bash
 > mkdir output
 > g++ -std=c++11 -o output/presupuesto main.cpp
@@ -65,19 +66,18 @@ g++ -std=c++11 -o presupuesto main.cpp
 
 ## Firmar el ejecutable (opcional)
 
-Para evitar que Windows bloquee el programa, podes firmarlo digitalmente con tu propio certificado.
-Esto pasa porque modificas archivos con un programa sin firmar y por nuevas restricciones de seguridad.
-Igualmente podes confiar que no es un virus porque tenes el codigo fuente en tus manos y la certeza
-de que no hay nada ofuscado o cosas raras.
+Para evitar que Windows bloquee el programa, puedes firmarlo digitalmente con tu propio certificado.  
+Esto pasa porque modificas archivos con un programa sin firmar y por nuevas restricciones de seguridad.  
+Igualmente puedes confiar que no es un virus porque tienes el código fuente en tus manos y la certeza de que no hay nada ofuscado o cosas raras.
 
-### Pasos rapidos
+### Pasos rápidos
 
 1. **Crear un certificado autofirmado** (PowerShell como Administrador):
    ```powershell
    New-SelfSignedCertificate -Type CodeSigningCert -Subject "CN=TuNombre" -CertStoreLocation Cert:\CurrentUser\My\
    ```
 
-2. **Obtener la huella digital** del certificado recien creado:
+2. **Obtener la huella digital** del certificado recién creado:
    ```powershell
    Get-ChildItem Cert:\CurrentUser\My\ | Where-Object { $_.Subject -like "*TuNombre*" }
    ```
@@ -85,34 +85,35 @@ de que no hay nada ofuscado o cosas raras.
 
 3. **Firmar el .exe** con `signtool` (reemplaza `[HUELLA]` por la huella que copiaste):
    ```bash
-   signtool sign /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com /sha1 [HUELLA] main.exe
+   signtool sign /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com /sha1 [HUELLA] presupuesto.exe
    ```
 
    Ejemplo real:
    ```bash
-   signtool sign /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com /sha1 EB7874BA316F7562620C2610FE4F06F09B868C8D main.exe
+   signtool sign /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com /sha1 EB7874BA316F7562620C2610FE4F06F09B868C8D presupuesto.exe
    ```
 
-> La herramienta `signtool` esta incluida en el Windows SDK o en Visual Studio. Si no la tenes, podes usar el "Developer PowerShell" que viene con Visual Studio.
+> La herramienta `signtool` está incluida en el Windows SDK o en Visual Studio. Si no la tienes, puedes usar el "Developer PowerShell" que viene con Visual Studio.
 
 ---
 
-## Como se usa
+## Cómo se usa
 
-Al ejecutar el programa vas a ver un menu como este:
+Al ejecutar el programa vas a ver un menú como este:
 
 ```
 <------------------------------------------------->
-|  Elije una opcion:                               |
-|  1. Ingresar dinero                              |
-|  2. Sacar dinero                                 |
-|  3. Mostrar total (balance)                      |
-|  4. Mostrar historial                            |
-|  5. Salir                                        |
+|  Elige una opción:                              |
+|  1. Ingresar dinero                             |
+|  2. Sacar dinero                                |
+|  3. Mostrar total (balance)                     |
+|  4. Mostrar historial                           |
+|  5. Salir                                       |
 <------------------------------------------------->
 ```
 
-Solo tenes que escribir el numero de la opcion y seguir las instrucciones en pantalla.
+Solo tienes que escribir el número de la opción y seguir las instrucciones en pantalla.  
+Después de cada operación, el programa mostrará un mensaje y esperará que presiones **Enter** para volver al menú principal (con la pantalla limpia).
 
 ### Ejemplo de historial guardado
 
@@ -128,9 +129,9 @@ Solo tenes que escribir el numero de la opcion y seguir las instrucciones en pan
 
 ```
 PresupuestoMensual/
-├── output/                # Carpeta donde se guardan los ejecutables
-├── main.cpp               # Codigo fuente
-├── base_de_datos.money    # Se genera automaticamente (historial)
+├── output/                # Carpeta donde se guardan los ejecutables (opcional)
+├── main.cpp               # Código fuente
+├── base_de_datos.money    # Se genera automáticamente (historial)
 └── README.md              # Este archivo
 ```
 
@@ -138,26 +139,30 @@ PresupuestoMensual/
 
 ## Estado del proyecto
 
-Beta funcional – las operaciones basicas andan bien.  
-Faltan algunas validaciones (por ejemplo, evitar numeros negativos, control de saldo insuficiente, etc.), pero es totalmente usable.
+**Beta funcional** – todas las operaciones básicas funcionan correctamente:  
+- Ingresos y gastos con validación de números positivos.  
+- Control de saldo insuficiente al retirar.  
+- Limpieza de pantalla y pausa amigable.  
+- Persistencia de datos en archivo de texto.  
 
-> Esto probablemente termine con solo esta beta.
+> Esto probablemente termine con solo esta beta, pero el código está listo para extender si se desea.
 
 ---
 
-## Queres colaborar
+## ¿Quieres colaborar?
 
-El proyecto es abierto. Podes:
+El proyecto es abierto. Puedes:
 - Probar el programa y reportar errores.
-- Sugerir nuevas opciones (editar movimientos, graficos en consola, etc.).
-- Pasar el codigo a algo mas lindo (API REST, base de datos SQLite...).
+- Sugerir nuevas opciones (editar movimientos, gráficos en consola, etc.).
+- Pasar el código a algo más lindo (API REST, base de datos SQLite...).
 
 ---
 
 ## Licencia
 
-Ver el archivo LICENCE.md
+Ver el archivo `LICENCE.md` (si no existe, se asume código libre bajo la licencia que elijas).
 
 ---
 
-*Si te sirvio, regalale una estrellita al repo.*
+*Si te sirvió, regálale una estrellita al repo.*
+```

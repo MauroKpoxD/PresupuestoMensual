@@ -14,7 +14,7 @@
 #include <ctime>
 #include <iomanip>
 #include <sstream>
-#include <cstdlib>  // para system()
+#include <cstdlib>
 
 #ifdef _WIN32
     #define CLEAR_COMMAND "cls"
@@ -26,7 +26,7 @@ void clear() {
     std::system(CLEAR_COMMAND);
 }
 
-const std::string base_de_datos = "base_de_datos.money";
+const std::string base_de_datos = "base_de_datos.money"; // CAMBIAR SI QUERES OTRO NOMBRE O CAMBIAR DB
 
 std::time_t obtener_hora_actual() {
     auto ahora = std::chrono::system_clock::now();
@@ -58,7 +58,7 @@ void registrar_gasto(int cantidad) {
 int calcular_balance() {
     std::ifstream archivo(base_de_datos);
     if (!archivo) {
-        // No mostrar error si el archivo no existe (primer ejecución)
+        // No es error si el archivo no existe (primer ejecución)
         return 0;
     }
     int balance = 0;
@@ -91,7 +91,8 @@ void mostrar_historial() {
     std::cout << "--------------------------------\n";
 }
 
-int mostrar_opciones() {
+// Función para mostrar el menu y obtener opcion
+int mostrar_menu() {
     int opcion;
     std::cout << "\n<------------------------------------------------->\n";
     std::cout << "|  Elige una opcion:                              |\n";
@@ -110,90 +111,65 @@ int main() {
     bool salir = false;
     
     while (!salir) {
-        clear();
-        int opcion = mostrar_opciones();
-        
-        // Validar que la entrada sea correcta
-        if (std::cin.fail()) {
-            std::cin.clear();
-            std::cin.ignore(10000, '\n');
-            std::cout << "Entrada invalida. Debe ser un numero.\n";
-            std::cout << "Presiona Enter para continuar...";
-            std::cin.ignore();
-            std::cin.get();
-            continue;
-        }
-        
+        clear(); // Limpia pantalla cada iteracion
+        int opcion = mostrar_menu(); // Obtiene opcion del usuario
+
         switch (opcion) {
             case 1: { // Ingresar dinero
-                clear();
                 int dinero;
                 std::cout << "Monto a depositar: ";
                 std::cin >> dinero;
-                if (std::cin.fail() || dinero <= 0) {
-                    std::cin.clear();
-                    std::cin.ignore(10000, '\n');
-                    std::cout << "Monto invalido. Debe ser un numero positivo.\n";
+                if (dinero <= 0) {
+                    std::cout << "El monto debe ser positivo.\n";
                 } else {
                     registrar_ingreso(dinero);
-                    std::cout << "Ingreso registrado correctamente.\n";
+                    std::cout << "Ingreso registrado.\n";
                 }
                 break;
             }
-            
             case 2: { // Sacar dinero (gasto)
-                clear();
                 int dinero;
                 std::cout << "Monto a retirar: ";
                 std::cin >> dinero;
-                if (std::cin.fail() || dinero <= 0) {
-                    std::cin.clear();
-                    std::cin.ignore(10000, '\n');
-                    std::cout << "Monto invalido. Debe ser un numero positivo.\n";
+                if (dinero <= 0) {
+                    std::cout << "El monto debe ser positivo.\n";
                 } else {
                     int balance_actual = calcular_balance();
                     if (dinero > balance_actual) {
                         std::cout << "Saldo insuficiente. Balance actual: " << balance_actual << "\n";
                     } else {
                         registrar_gasto(dinero);
-                        std::cout << "Gasto registrado correctamente.\n";
+                        std::cout << "Gasto registrado.\n";
                     }
                 }
                 break;
             }
-            
-            case 3: { // Mostrar balance total
-                clear();
+            case 3: { // Mostrar balance
                 int balance = calcular_balance();
                 std::cout << "Balance actual: " << balance << "\n";
                 break;
             }
-            
             case 4: { // Mostrar historial
-                clear();
                 mostrar_historial();
                 break;
             }
-            
             case 5: { // Salir
-                clear();
-                std::cout << "Saliendo del programa...\n";
+                std::cout << "Saliendo...\n";
                 salir = true;
-                break;
+                continue; // Para que no pida la pausa al salir
             }
-            
             default: {
-                std::cout << "Opcion invalida. Elige un numero del 1 al 5.\n";
+                std::cout << "Opcion invalida. Intenta de nuevo.\n";
                 break;
             }
         }
-        
+
         if (!salir) {
+            // Pausa para que el usuario vea el resultado antes de limpiar pantalla
             std::cout << "\nPresiona Enter para continuar...";
-            std::cin.ignore();
+            std::cin.ignore(); // Ignorar el '\n' pendiente
             std::cin.get();
         }
     }
-    
     return 0;
 }
